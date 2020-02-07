@@ -23,3 +23,6 @@ https://developers.google.com/drive/api/v3/quickstart/python   (Enable the Drive
   - The variable source_drive_id is mandatory. If destination_drive_id is empty will be source_drive_id
   - Las variables source_folder_id y destination_folder_id no son indispensables. Si se encuentran vacias se harán las operaciones en la raiz. Si no, se hará la operacion en la carpeta existente con ese nombre. 
   - The variables source_folder_id y destination_folder_id are optionals. If they are empty the operations will be in the root
+### 5. Run the script with python google_api_files_mover.py
+
+If you need to log in with another account, delete token.pickle file.
