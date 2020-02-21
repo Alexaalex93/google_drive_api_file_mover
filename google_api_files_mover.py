@@ -199,37 +199,38 @@ while True:
             items_list = [item for item in items_list if item['parents'][0] == source_drive_id]
     
     for item in items_list:
-            
-        if flag == 0:
-            folder_name = decade_mode(item['name'])
-        elif flag == 1:
-            folder_name = file_mode(item['name'])
-        elif flag == 2:
-            folder_name = letter_mode(item['name'])           
-        
-        if flag != 3:   
-            if folder_name not in list(folders.keys()):
-                new_parent = create_folder(folder_name, destination_folder_id)
-                
-            if folders[folder_name]['id'] != item['parents'][0]:
-                # Retrieve the existing parents to remove
-                file_to_move = service.files().get(fileId=item['id'],
-                                           supportsAllDrives = 'true',
-                                                 fields='parents').execute()
-                previous_parents = ",".join(file_to_move.get('parents'))
-                # Move the file to the new folder
-                file_moved = service.files().update(fileId=item['id'],
-                                                    supportsAllDrives = 'true',
-                                                    addParents=folders[folder_name]['id'],
-                                                    removeParents=previous_parents,
-                                                    fields='id, parents').execute()
-        
-        else:
-            service.files().update(fileId=item['id'],
-                                   supportsAllDrives = 'true',
-                                   removeParents=item['parents'][0],
-                                   addParents=destination_folder_id).execute()
-    
+        try:   
+            if flag == 0:
+                folder_name = decade_mode(item['name'])
+            elif flag == 1:
+                folder_name = file_mode(item['name'])
+            elif flag == 2:
+                folder_name = letter_mode(item['name'])           
+
+            if flag != 3:   
+                if folder_name not in list(folders.keys()):
+                    new_parent = create_folder(folder_name, destination_folder_id)
+
+                if folders[folder_name]['id'] != item['parents'][0]:
+                    # Retrieve the existing parents to remove
+                    file_to_move = service.files().get(fileId=item['id'],
+                                               supportsAllDrives = 'true',
+                                                     fields='parents').execute()
+                    previous_parents = ",".join(file_to_move.get('parents'))
+                    # Move the file to the new folder
+                    file_moved = service.files().update(fileId=item['id'],
+                                                        supportsAllDrives = 'true',
+                                                        addParents=folders[folder_name]['id'],
+                                                        removeParents=previous_parents,
+                                                        fields='id, parents').execute()
+
+            else:
+                service.files().update(fileId=item['id'],
+                                       supportsAllDrives = 'true',
+                                       removeParents=item['parents'][0],
+                                       addParents=destination_folder_id).execute()
+        except:
+            print(item['name'] + ' skipped')
         total_files += 1
     
     print('Files moved: ' + str(total_files))
