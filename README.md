@@ -1,4 +1,4 @@
-# google_drive_api_file_mover
+﻿# google_drive_api_file_mover
 Proof of concept about how google drive api works moving files, creating folders...
 
 ### How it works:
@@ -16,7 +16,9 @@ https://developers.google.com/drive/api/v3/quickstart/python   (Enable the Drive
   - flag = 2 // Sort alphabetically // If the variable destination_drive_id is empty, source_drive_id will be destination_drive_id
   - flag = 3 // Mueve todo el contenido de una carpeta a otra // Tiene en cuenta variable source_drive_id y destination_drive_id
   - flag = 3 // Move the whole content from source to destination // It needs source_drive_id and destination_drive_id
-  
+  - flag = // Se ordena por intervalo de años // Si la variable destination_drive_id está vacía se tendrá en cuenta source_drive_id como destination_drive_id // Se debe dar valor a la variable interval con el siguiente formato 'AAAA - AAAA'  
+- flag = 4 // Sort by specific interval // Value in interval variable needed with the following format 'AAAA - AAAA' 
+
 ### 4. Modify variables source_drive_id, source_folder_id, destination_drive_id and destination_folder_id with the folder's id.
   https://drive.google.com/drive/u/3/folders/1w1pucaGH_example_id_fds_Fhytgzmz8AoTr8s
   - La variable source_drive_id indispensable. Si no se rellena destination_drive_id se tendrá en cuenta source_drive como destination_drive_id 

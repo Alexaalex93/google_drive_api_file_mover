@@ -27,10 +27,12 @@ Las variables source_folder_id y destination_folder_id no son indispensables. Si
 ### flag = 1 // Se ordena cada pelicula en carpetas // Si la variable destination_drive_id está vacía se tendrá en cuenta source_drive_id como destination_drive_id
 ### flag = 2 // Se ordena alfabéticamente // Si la variable destination_drive_id está vacía se tendrá en cuenta source_drive_id como destination_drive_id
 ### flag = 3 // Mueve todo el contenido de una carpeta a otra // Tiene en cuenta variable source_drive_id y destination_drive_id
+### flag = 4 // Se ordena por intervalo de años // Si la variable destination_drive_id está vacía se tendrá en cuenta source_drive_id como destination_drive_id
+###             Se debe dar valor a la variable interval con el siguiente formato 'AAAA - AAAA'
 """
 creds = None
 
-flag = 3
+flag = 4
 
 source_drive_id = ''
 source_folder_id = ''
@@ -39,6 +41,8 @@ destination_drive_id = ''
 destination_folder_id = ''
 
 SCOPES = ['https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/drive']
+
+interval = '2015 - 2017'
 
 
 if not destination_drive_id:
@@ -149,6 +153,18 @@ def file_mode(name):
     p = re.compile(r'.*\(\d{4}\)')
     return p.search(name).group(0)
 
+def interval_mode(name):
+    
+    p = re.compile(r'\(\d{4}\)')
+    year = p.search(name).group(0)
+    year = int(year[1:-1])
+    min_year = int(interval[:4])
+    max_year = int(interval[-4:])
+    if year >= min_year and year <= max_year:
+        return interval
+    else:
+        return ''
+    
 
 def get_children(items_list, parent_id): #Cambiar retornando valores. Muy chapucero
     global children_tree
@@ -165,7 +181,7 @@ def get_children(items_list, parent_id): #Cambiar retornando valores. Muy chapuc
 start_time = time.time()
 items_list = []
 while True:
-    if flag <0 or flag > 3:
+    if flag < 0 or flag > 4:
         print("Pon un flag válido")
         break
     
@@ -182,14 +198,14 @@ while True:
         q_query = 'trashed = false and \'' + source_drive_id + '\' in parents'
  
     items_response = service.files().list(includeItemsFromAllDrives = 'true', supportsAllDrives = 'true', q = q_query,
-                                   corpora = 'drive', pageSize=100, driveId = source_drive_id, pageToken=page_token, fields = 'nextPageToken, files(id, name, parents, mimeType)').execute()
+                                   corpora = 'drive', pageSize=1000, driveId = source_drive_id, pageToken=page_token, fields = 'nextPageToken, files(id, name, parents, mimeType)').execute()
     
     items_list = items_response.get('files', [])
     children_tree = []
 
     if source_folder_id:
         get_children(items_list, source_folder_id)
-        
+        items_list = children_tree
         if flag != 3:
             items_list = [item for item in items_list if item['mimeType'] != 'application/vnd.google-apps.folder']
         else:
@@ -205,7 +221,11 @@ while True:
             elif flag == 1:
                 folder_name = file_mode(item['name'])
             elif flag == 2:
-                folder_name = letter_mode(item['name'])           
+                folder_name = letter_mode(item['name'])        
+            elif flag == 4:
+                folder_name = interval_mode(item['name'])
+                if not folder_name:
+                    continue
 
             if flag != 3:   
                 if folder_name not in list(folders.keys()):
