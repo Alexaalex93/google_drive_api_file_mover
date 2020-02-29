@@ -2,12 +2,14 @@
 Proof of concept about how google drive api works moving files, creating folders...
 
 ### How it works:
-### 1. It needs a certificated taken from here:
+### 1. Install client library
+pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
+### 2. It needs a certificated taken from here:
 https://developers.google.com/drive/api/v3/quickstart/python   (Enable the Drive API)
 
-### 2. Put the creds.json in the script's folder 
+### 3. Put the creds.json in the script's folder 
 
-### 3. Modify the flag's number according:
+### 4. Modify the flag's number according:
   - flag = 0 // Se ordena por décadas // Si la variable destination_drive_id está vacía se tendrá en cuenta source_drive_id como destination_drive_id
   - flag = 0 // Sort by decade // If the variable destination_drive_id is empty, source_drive_id will be destination_drive_id
   - flag = 1 // Se ordena cada pelicula en carpetas // Si la variable destination_drive_id está vacía se tendrá en cuenta source_drive_id como destination_drive_id
@@ -19,7 +21,7 @@ https://developers.google.com/drive/api/v3/quickstart/python   (Enable the Drive
   - flag = // Se ordena por intervalo de años // Si la variable destination_drive_id está vacía se tendrá en cuenta source_drive_id como destination_drive_id // Se debe dar valor a la variable interval con el siguiente formato 'AAAA - AAAA'  
 - flag = 4 // Sort by specific interval // Value in interval variable needed with the following format 'AAAA - AAAA' 
 
-### 4. Modify variables source_drive_id, source_folder_id, destination_drive_id and destination_folder_id with the folder's id.
+### 5. Modify variables source_drive_id, source_folder_id, destination_drive_id and destination_folder_id with the folder's id.
   https://drive.google.com/drive/u/3/folders/1w1pucaGH_example_id_fds_Fhytgzmz8AoTr8s
   - La variable source_drive_id indispensable. Si no se rellena destination_drive_id se tendrá en cuenta source_drive como destination_drive_id 
   - The variable source_drive_id is mandatory. If destination_drive_id is empty will be source_drive_id
